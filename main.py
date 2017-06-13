@@ -12,7 +12,7 @@ def main():
         url, header = parseCommand(aria2Command)
         sendJob(host, token, proxy, url, header, str(count))
         count += 1
-        if aria2Command:
+        if not aria2Command:
             break
 
 def readSettings():
