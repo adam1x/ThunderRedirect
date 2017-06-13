@@ -9,11 +9,12 @@ def main():
     count = 0
     while True:
         aria2Command = input().strip()
+        if not aria2Command:
+            break
+
         url, header = parseCommand(aria2Command)
         sendJob(host, token, proxy, url, header, str(count))
         count += 1
-        if not aria2Command:
-            break
 
 def readSettings():
     if os.path.isfile(CONF_PATH):
