@@ -7,12 +7,13 @@ def main():
     print("aria2 commands:")
 
     count = 0
-    aria2Command = ''
-    while not aria2Command:
+    while True:
         aria2Command = input().strip()
         url, header = parseCommand(aria2Command)
         sendJob(host, token, proxy, url, header, str(count))
         count += 1
+        if aria2Command:
+            break
 
 def readSettings():
     if os.path.isfile(CONF_PATH):
@@ -38,11 +39,11 @@ def parseCommand(aria2Command):
         url = next(filter(lambda arg: arg.startswith('http://'), argv))
     except (ValueError, IndexError, StopIteration):
         print("Invalid Command: " + aria2Command)
-        return
+        sys.exit()
 
     if len(headers) == 0 or len(url) == 0:
         print("Invalid Command: " + aria2Command)
-        return
+        sys.exit()
 
     return url, headers
 
@@ -56,7 +57,12 @@ def sendJob(host, token, proxy, url, header, id):
                           'method':'aria2.addUri',
                           'params':['token:' + token, [redirectedUrl], {'header':header}]})
 
-    aria2Requests = requests.post('http://%s:6800/jsonrpc' % host, data = jsonreq)
+    try:
+        aria2Requests = requests.post('http://%s:6800/jsonrpc' % host, data = jsonreq)
+    except ConnectionRefusedError:
+        print("Unable to connect to aria2 @ %s" % host)
+        sys.exit()
+
     print(aria2Requests.json())
 
 
