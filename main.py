@@ -41,7 +41,7 @@ def parseCommand(aria2Command):
     except (ValueError, IndexError, StopIteration):
         print("Invalid Command: " + aria2Command)
         return
-    
+
     if len(header) == 0 or len(url) == 0:
         print("Invalid Command: " + aria2Command)
         return
@@ -51,8 +51,8 @@ def parseCommand(aria2Command):
 def sendJob(host, token, proxy, url, header, id):
     headers = dict([s.split(': ') for s in header if s])
     headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36'
-    thunderRequests = requests.head(url, headers = headers, proxies = {'http':proxy}, allow_redirects = True)
-    redirectedUrl = thunderRequests.url
+    thunderRequests = requests.get(url, headers = headers, proxies = {'http':proxy}, allow_redirects = False)
+    redirectedUrl = thunderRequests.headers['location']
     print(redirectedUrl)
 
     jsonreq = json.dumps({'jsonrpc':'2.0', 'id':id,
