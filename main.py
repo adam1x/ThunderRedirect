@@ -1,4 +1,4 @@
-import json, os, shlex, requests
+import json, os, shlex, sys, requests
 
 CONF_PATH = 'proxy.txt'
 
