@@ -37,7 +37,7 @@ def parseCommand(aria2Command):
     try:
         header = argv[argv.index('--header') + 1]
         headers.append(header) # TODO: support multi headers
-        url = next(filter(lambda arg: arg.startswith('http://'), argv)) # TODO: support multi urls
+        url = next(filter(lambda arg: arg.startswith('http://'), argv))
     except (ValueError, IndexError, StopIteration):
         print("Invalid Command: " + aria2Command)
         return
@@ -53,7 +53,6 @@ def sendJob(host, token, proxy, url, header, id):
     headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36'
     thunderRequests = requests.get(url, headers = headers, proxies = {'http':proxy}, allow_redirects = False)
     redirectedUrl = thunderRequests.headers['location']
-    print(redirectedUrl)
 
     jsonreq = json.dumps({'jsonrpc':'2.0', 'id':id,
                           'method':'aria2.addUri',
