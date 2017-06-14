@@ -1,6 +1,6 @@
 # ThunderRedirect
 
-"[Thunder Lixian](http://lixian.xunlei.com/)" downloads normally go through an HTTP redirection before arriving at servers that host the files. However, Thunder geoblocks its "Lixian" service in the U.S. by redirecting download requests (as well as its web interface) to a bogus domain. This script retrieves actual file-serving URLs through a proxy and then forwards them to a running `aria2` instance for downloading.
+"[Thunder Lixian](http://lixian.xunlei.com/)" downloads normally go through an HTTP redirection before arriving at file-hosting servers. However, Thunder geoblocks its "Lixian" service in the U.S. by redirecting download requests (as well as its web interface) to a bogus domain. This script retrieves actual file-serving URLs through a proxy and then forwards them to a running `aria2` instance for downloading.
 
 ## Usage
 User needs to input:
