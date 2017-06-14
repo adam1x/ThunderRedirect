@@ -1,6 +1,6 @@
 # ThunderRedirect
 
-Download links from "Thunder Lixian" go through an HTTP redirection until getting to the actual URL. Thunder geoblocks its services in the US by redirecting to a bogus domain. This script captures the actual URLs by accessing download links through a proxy and then forwards them to a running `aria2` instance.
+Download links from "Thunder Lixian" go through an HTTP redirection until getting to the actual URLs. Thunder geoblocks its services in the US by redirecting to a bogus domain. This script captures the actual URLs by accessing download links through a proxy and then forwards them to a running `aria2` instance.
 
 ## Usage
 User needs to input:
