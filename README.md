@@ -18,7 +18,7 @@ After a proxy server is supplied for the first time, it will be saved in `proxy.
 
 ## Note
 
-- This script is written in Python 3. It is not compatible with Python 2.
+- This script is written in Python 3. It is not compatible with Python 2, mainly because of different behaviors of the `input()` function.
 
 ## Known issues
 
