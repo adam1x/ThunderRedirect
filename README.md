@@ -14,7 +14,7 @@ After a proxy server is supplied for the first time, it will be saved in `proxy.
 
 ## Known issues
 
-- When adding more than one downloads, if one of the middle ones failed, the following raw aria2 commands will be written to `stdin`. If there is a newline character within these commands, some of them will be executed.
+- When adding more than one downloads, if any but the last one failed, any raw aria2 commands that follow will be written to `stdin`. And all of these will be executed.
 
 ## TODO
 
