@@ -1,6 +1,6 @@
 # ThunderRedirect
 
-Download links from "Thunder Lixian" go through an HTTP redirection until getting to the actual URLs. Thunder geoblocks its services in the US by redirecting to a bogus domain. This script captures the actual URLs by accessing download links through a proxy and then forwards them to a running `aria2` instance.
+"[Thunder Lixian](http://lixian.xunlei.com/)" downloads normally go through an HTTP redirection before arriving at servers that host the files. However, Thunder geoblocks its "Lixian" service in the U.S. by redirecting download requests (as well as its web interface) to a bogus domain. This script retrieves actual file-serving URLs through a proxy and then forwards them to a running `aria2` instance for downloading.
 
 ## Usage
 User needs to input:
@@ -12,9 +12,17 @@ User needs to input:
 
 After a proxy server is supplied for the first time, it will be saved in `proxy.txt`.
 
+## Required modules
+
+- [requests](https://github.com/requests/requests)
+
+## Note
+
+- This script is written in Python 3. It is not compatible with Python 2.
+
 ## Known issues
 
-- When adding more than one downloads, if any but the last one failed, any raw aria2 commands that follow will be written to `stdin`. And all of these will be executed.
+- While adding more than one downloads, if any but the last one failed, all raw aria2 commands that follow will be written to `stdin`. And, as such, they will be treated by the shell as regular commands and executed.
 
 ## TODO
 
