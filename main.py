@@ -73,7 +73,7 @@ def sendJob(host, token, proxy, url, header, id):
             print("[FAILED] Geoblocked and redirected to: %s . Maybe proxy isn't working." % redirectedUrl)
             sys.exit(1)
     else:
-        print("[FAILED] No redirection captured. HTTP status code: %d" % r.status_code)
+        print("[FAILED] No redirection captured. HTTP status code: %d." % r.status_code)
         sys.exit(1)
 
     payload = json.dumps({'jsonrpc':'2.0', 'id':id,
@@ -84,13 +84,13 @@ def sendJob(host, token, proxy, url, header, id):
         r = requests.post('http://%s:6800/jsonrpc' % host, data = payload, timeout = LOCAL_TIMEOUT)
         r.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print("[FAILED] Connection with aria2 @ %s failed." % host)
+        print("[FAILED] Connection with aria2 @ %s failed. Check hostname and token." % host)
         print(e)
         sys.exit(1)
 
     response = r.json()
     if 'code' in response:
-        print("[FAILED] Failed to create task on aria2: %s" % response['message'])
+        print("[FAILED] Failed to create task on aria2: %s ." % response['message'])
         sys.exit(1)
     else:
         print("[Success] Created task on aria2.")
