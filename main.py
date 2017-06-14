@@ -8,7 +8,7 @@ REDIRECT_BLACKLIST = ['http://www.kankan.com']
 
 def main():
     host, token, proxy = readSettings()
-    print("aria2 commands:")
+    print("aria2 commands (enter empty line to exit):")
 
     count = 0
     while True:
@@ -29,7 +29,7 @@ def readSettings():
         with open(CONF_PATH, 'wt') as f:
             f.write(proxy + '\n')
 
-    host = input("host: ")
+    host = input("host (empty means localhost): ")
     if not host:
         host = 'localhost'
 
@@ -62,7 +62,7 @@ def sendJob(host, token, proxy, url, header, id):
         r.raise_for_status()
     except requests.exceptions.RequestException as e:
         print("[FAILED] Connection with Thunder Lixian failed.")
-        print(e)
+        print("-------> %s" % e)
         sys.exit(1)
 
     # for now, redirection for both downloads and geoblocking seem to be implemented
@@ -85,7 +85,7 @@ def sendJob(host, token, proxy, url, header, id):
         r.raise_for_status()
     except requests.exceptions.RequestException as e:
         print("[FAILED] Connection with aria2 @ %s failed. Check hostname and token." % host)
-        print(e)
+        print("-------> %s" % e)
         sys.exit(1)
 
     response = r.json()
