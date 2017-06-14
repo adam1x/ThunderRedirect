@@ -1,6 +1,10 @@
 import json, os, shlex, sys, requests
 
 CONF_PATH = 'proxy.txt'
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36'
+REMOTE_TIMEOUT = (10, 10)
+LOCAL_TIMEOUT = (5, 5)
+REDIRECT_BLACKLIST = ['http://www.kankan.com']
 
 def main():
     host, token, proxy = readSettings()
@@ -38,33 +42,58 @@ def parseCommand(aria2Command):
     try:
         headers = [ argv[i + 1] for i, s in enumerate(argv) if s == '--header' ]
         url = next(filter(lambda arg: arg.startswith('http://'), argv))
-    except (ValueError, IndexError, StopIteration):
-        print("Invalid Command: " + aria2Command)
-        sys.exit()
+    except (IndexError, StopIteration):
+        print("[FAILED] invalid Command: " + aria2Command)
+        sys.exit(1)
 
     if len(headers) == 0 or len(url) == 0:
-        print("Invalid Command: " + aria2Command)
-        sys.exit()
+        print("[FAILED] invalid Command: " + aria2Command)
+        sys.exit(1)
 
     return url, headers
 
 def sendJob(host, token, proxy, url, header, id):
     headers = dict([ s.split(': ') for s in header if s ])
-    headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36'
-    thunderRequests = requests.get(url, headers = headers, proxies = {'http':proxy}, allow_redirects = False)
-    redirectedUrl = thunderRequests.headers['location']
+    headers['User-Agent'] = USER_AGENT
+    
+    try:
+        r = requests.get(url, headers = headers, proxies = {'http':proxy},
+                         allow_redirects = False, timeout = REMOTE_TIMEOUT)
+        r.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print("[FAILED] Connection with Thunder Lixian failed.")
+        print(e)
+        sys.exit(1)
 
-    jsonreq = json.dumps({'jsonrpc':'2.0', 'id':id,
+    # for now, redirection for both downloads and geoblocking seem to be implemented
+    # with HTTP 302; HTTP 301 is supported should there be any change
+    if r.status_code == requests.codes.moved or r.status_code == requests.codes.found:
+        redirectedUrl = r.headers['location']
+        if any([redirectedUrl.startswith(wanted) for wanted in REDIRECT_BLACKLIST]):
+            print("[FAILED] Geoblocked and redirected to: %s . Maybe proxy isn't working." % redirectedUrl)
+            sys.exit(1)
+    else:
+        print("[FAILED] No redirection captured. HTTP status code: %d" % r.status_code)
+        sys.exit(1)
+
+    payload = json.dumps({'jsonrpc':'2.0', 'id':id,
                           'method':'aria2.addUri',
                           'params':['token:' + token, [redirectedUrl], {'header':header}]})
 
     try:
-        aria2Requests = requests.post('http://%s:6800/jsonrpc' % host, data = jsonreq)
-    except ConnectionRefusedError:
-        print("Unable to connect to aria2 @ %s" % host)
-        sys.exit()
+        r = requests.post('http://%s:6800/jsonrpc' % host, data = payload, timeout = LOCAL_TIMEOUT)
+        r.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print("[FAILED] Connection with aria2 @ %s failed." % host)
+        print(e)
+        sys.exit(1)
 
-    print(aria2Requests.json())
+    response = r.json()
+    if 'code' in response:
+        print("[FAILED] Failed to create task on aria2: %s" % response['message'])
+        sys.exit(1)
+    else:
+        print("[Success] Created task on aria2.")
 
 
 if __name__ == '__main__':
