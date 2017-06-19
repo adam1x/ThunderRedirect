@@ -12,6 +12,8 @@ User needs to input:
 
 After a proxy server is supplied for the first time, it will be saved in `proxy.txt`.
 
+Read the complete setup guide [here](https://github.com/adam1x/ThunderRedirect/wiki/Setup).
+
 ## Required modules
 
 - [`requests`](https://github.com/requests/requests)
