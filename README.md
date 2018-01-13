@@ -1,3 +1,6 @@
+## Project Status
+Sadly, as of July 2017, Thunder quietly shut down the "Lixian" functionality, and you can no longer retrieve remotely downloaded files on their servers. (See users' posts on this [forum](http://bbs.xunlei.com/forum.php?mod=forumdisplay&fid=99) for the past few months.) As such, this project is now *abandoned*.
+
 # ThunderRedirect
 
 "[Thunder Lixian](http://lixian.xunlei.com/)" downloads normally go through an HTTP redirection before arriving at file-hosting servers. However, Thunder geoblocks its "Lixian" service in the U.S. by redirecting download requests (as well as its web interface) to a bogus domain. This script retrieves actual file-serving URLs through a proxy and then forwards them to a running `aria2` instance for downloading.
